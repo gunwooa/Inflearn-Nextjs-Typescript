@@ -9,7 +9,7 @@ const IndexPage: NextPage = function () {
 
   return (
     <ServiceLayout title="test">
-      <Flex direction="column" flex={1}>
+      <Flex direction="column" flex={1} bgColor="gray.50" pt={10}>
         <Box px={6} maxWidth="md" mx="auto">
           <img src="/main_logo.svg" alt="메인 로고" />
           <Flex justify="center">
