@@ -7,7 +7,7 @@ interface Props {
 
 const GoogleLoginButton: React.VFC<Props> = function ({ onClick }) {
   return (
-    <Flex justify="center" px={6}>
+    <Flex justify="center">
       <Button
         onClick={onClick}
         size="lg"

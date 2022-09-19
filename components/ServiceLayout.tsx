@@ -1,5 +1,7 @@
+import { Flex } from '@chakra-ui/react';
 import Head from 'next/head';
 import React from 'react';
+import GNB from './GNB';
 
 interface Props {
   title: string;
@@ -7,12 +9,13 @@ interface Props {
 
 const ServiceLayout: React.FC<Props> = function ({ title = 'blah x2', children }) {
   return (
-    <div>
+    <Flex direction="column" h="100vh">
       <Head>
         <title>{title}</title>
       </Head>
+      <GNB />
       {children}
-    </div>
+    </Flex>
   );
 };
 
