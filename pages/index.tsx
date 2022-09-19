@@ -1,7 +1,11 @@
 import { NextPage } from 'next';
 import { Box, Flex, Heading } from '@chakra-ui/react';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import ServiceLayout from '@/components/ServiceLayout';
 import GoogleLoginButton from '@/components/GoogleLoginButton';
+import FirebaseClient from '@/models/firebase_client';
+
+const provider = new GoogleAuthProvider();
 
 const IndexPage: NextPage = function () {
   return (
@@ -13,7 +17,17 @@ const IndexPage: NextPage = function () {
         </Flex>
       </Box>
       <Box mt={20}>
-        <GoogleLoginButton />
+        <GoogleLoginButton
+          onClick={() => {
+            signInWithPopup(FirebaseClient.getInstance().Auth, provider)
+              .then((result) => {
+                console.info(result.user);
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+          }}
+        />
       </Box>
     </ServiceLayout>
   );

@@ -1,10 +1,15 @@
 import { Button, Flex } from '@chakra-ui/react';
 import React from 'react';
 
-const GoogleLoginButton: React.VFC = function () {
+interface Props {
+  onClick: () => void;
+}
+
+const GoogleLoginButton: React.VFC<Props> = function ({ onClick }) {
   return (
     <Flex justify="center" px={6}>
       <Button
+        onClick={onClick}
         size="lg"
         maxW="md"
         borderRadius="full"
