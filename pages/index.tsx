@@ -5,7 +5,7 @@ import GoogleLoginButton from '@/components/GoogleLoginButton';
 import { useAuth } from '@/contexts/AuthUser.context';
 
 const IndexPage: NextPage = function () {
-  const { signInWithGoogle } = useAuth();
+  const { authUser, signInWithGoogle } = useAuth();
 
   return (
     <ServiceLayout title="test">
@@ -16,9 +16,11 @@ const IndexPage: NextPage = function () {
             <Heading>#BlahBlah</Heading>
           </Flex>
         </Box>
-        <Box mt="40">
-          <GoogleLoginButton onClick={signInWithGoogle} />
-        </Box>
+        {!authUser && (
+          <Box mt="40">
+            <GoogleLoginButton onClick={signInWithGoogle} />
+          </Box>
+        )}
       </Flex>
     </ServiceLayout>
   );

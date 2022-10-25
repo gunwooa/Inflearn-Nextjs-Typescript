@@ -1,14 +1,12 @@
 import { Box, Button, Flex } from '@chakra-ui/react';
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useAuth } from '@/contexts/AuthUser.context';
 
 const HEIGHT = 16;
 const LOGO_SIZE = 40;
 
 const GNB: React.VFC = function () {
-  const { authUser, loading, signOut, signInWithGoogle } = useAuth();
-
-  const authInitialized = useMemo(() => loading || !authUser, [loading, authUser]);
+  const { authUser, signOut, signInWithGoogle } = useAuth();
 
   return (
     <Flex alignItems="center" justify="center" borderBottomWidth={1} borderColor="gray.100" height={HEIGHT}>
@@ -16,7 +14,7 @@ const GNB: React.VFC = function () {
         <img src="/logo.svg" alt="GNB 로고" width={LOGO_SIZE} height={LOGO_SIZE} />
       </Box>
       <Box top={3} right={4} position="absolute">
-        {authInitialized ? (
+        {!authUser ? (
           <Button
             onClick={signInWithGoogle}
             bgColor="pink.300"
