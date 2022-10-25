@@ -12,8 +12,9 @@ export default function useFirebaseAuth() {
 
     try {
       const signInResult = await signInWithPopup(FirebaseClient.getInstance().Auth, provider);
+      console.log('signInResult : ', signInResult);
+
       if (signInResult.user) {
-        console.info(signInResult.user);
         const resp = await fetch('/api/members.add', {
           method: 'POST',
           headers: {
@@ -27,9 +28,9 @@ export default function useFirebaseAuth() {
           }),
         });
 
-        console.info({ status: resp.status });
-        const respData = await resp.json();
-        console.info(respData);
+        const respJson = await resp.json();
+        console.info('resp : ', resp);
+        console.info('respJson : ', respJson);
       }
     } catch (err) {
       console.error(err);
