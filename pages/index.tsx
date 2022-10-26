@@ -9,8 +9,8 @@ const IndexPage: NextPage = function () {
 
   return (
     <ServiceLayout title="test">
-      <Flex direction="column" flex={1} bgColor="gray.50" pt={10}>
-        <Box px={6} maxWidth="md" mx="auto">
+      <Box mt={5} px={5}>
+        <Box maxWidth="md" mx="auto">
           <img src="/main_logo.svg" alt="메인 로고" />
           <Flex justify="center">
             <Heading>#BlahBlah</Heading>
@@ -21,7 +21,7 @@ const IndexPage: NextPage = function () {
             <GoogleLoginButton onClick={signInWithGoogle} />
           </Box>
         )}
-      </Flex>
+      </Box>
     </ServiceLayout>
   );
 };
