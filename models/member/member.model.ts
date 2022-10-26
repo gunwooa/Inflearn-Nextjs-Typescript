@@ -45,8 +45,21 @@ const add = async ({ uid, email, displayName, photoURL }: InAuthUser): Promise<t
   }
 };
 
+const findByScreenName = async (screenName: string): Promise<InAuthUser | null> => {
+  const memberRef = FirebaseAdmin.getInstance().Firebase.collection(SCREEN_NAME_COL).doc(screenName);
+  const memberDoc = await memberRef.get();
+  if (!memberDoc.exists) {
+    return null;
+  }
+
+  const data = memberDoc.data() as InAuthUser;
+
+  return data;
+};
+
 const MemberModal = {
   add,
+  findByScreenName,
 };
 
 export default MemberModal;
