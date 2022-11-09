@@ -1,23 +1,21 @@
 /* eslint-disable no-alert */
-import { NextPage } from 'next';
-import React, { ChangeEvent, EventHandler, useCallback, useState } from 'react';
+import { GetServerSideProps, NextPage } from 'next';
+import React, { ChangeEvent, useCallback, useState } from 'react';
 import { Avatar, Box, Button, Flex, FormControl, FormLabel, Switch, Text, Textarea } from '@chakra-ui/react';
 import ResizeTextArea from 'react-textarea-autosize';
+import axios, { AxiosResponse } from 'axios';
 import ServiceLayout from '@/components/ServiceLayout';
 import { InAuthUser } from '@/models/in_auth_user';
 import { useAuth } from '@/contexts/AuthUser.context';
 
-const USER_INFO: InAuthUser = {
-  uid: 'test',
-  email: 'gunwooooa@gmail.com',
-  displayName: 'GW D',
-  photoURL: 'https://lh3.googleusercontent.com/a/ALm5wu1s26VqzFeHv0hdABFJmyqqjA5PBTsTkbGsszf8rA=s96-c',
-};
+interface Props {
+  userInfo: InAuthUser | null;
+}
 
 const ANONYMOUS_IMAGE_URL = '/anonymous.png';
 const ANONYMOUS_SWITCH_ID = 'anonymous';
 
-const UserHomePage: NextPage = function () {
+const UserHomePage: NextPage<Props> = function ({ userInfo }) {
   const { authUser } = useAuth();
   const [message, setMessage] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(true);
@@ -39,13 +37,17 @@ const UserHomePage: NextPage = function () {
     setIsAnonymous((prev) => !prev);
   }, [authUser]);
 
+  if (userInfo === null) {
+    return <p>사용자가 존재하지 않습니다.</p>;
+  }
+
   return (
     <ServiceLayout title="user home">
       <Flex p={4} bgColor="white">
-        <Avatar src={USER_INFO.photoURL ?? ''} size="lg" />
+        <Avatar src={userInfo.photoURL ?? ''} size="lg" />
         <Flex direction="column" justify="center" ml={4}>
-          <Text fontSize="md">{USER_INFO.displayName}</Text>
-          <Text fontSize="sm">{USER_INFO.email}</Text>
+          <Text fontSize="md">{userInfo.displayName}</Text>
+          <Text fontSize="sm">{userInfo.email}</Text>
         </Flex>
       </Flex>
 
@@ -94,3 +96,33 @@ const UserHomePage: NextPage = function () {
 };
 
 export default UserHomePage;
+
+export const getServerSideProps: GetServerSideProps<Props> = async ({ query }) => {
+  const { screenName } = query;
+  const defaultProps = {
+    props: {
+      userInfo: null,
+    },
+  };
+
+  if (screenName === undefined) {
+    return defaultProps;
+  }
+
+  try {
+    const protocol = process.env.PROTOCOL ?? 'http';
+    const host = process.env.HOST ?? 'localhost';
+    const port = process.env.PORT ?? '3000';
+    const baseUrl = `${protocol}://${host}:${port}`;
+
+    const userInfoRes: AxiosResponse<InAuthUser> = await axios(`${baseUrl}/api/user.info/${screenName}`);
+    return {
+      props: {
+        userInfo: userInfoRes.data ?? defaultProps.props.userInfo,
+      },
+    };
+  } catch (e) {
+    console.error(e);
+    return defaultProps;
+  }
+};
