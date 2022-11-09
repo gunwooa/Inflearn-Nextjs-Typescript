@@ -7,6 +7,8 @@ interface Props {
   title: string;
 }
 
+const LAYOUT_MAX_WIDTH = 500;
+
 const ServiceLayout: React.FC<Props> = function ({ title = 'blah x2', children }) {
   return (
     <>
@@ -14,8 +16,10 @@ const ServiceLayout: React.FC<Props> = function ({ title = 'blah x2', children }
         <title>{title}</title>
       </Head>
       <GNB />
-      <Flex direction="column" h="100vh" pt={GNB_HEIGHT} bgColor="gray.50">
-        {children}
+      <Flex justify="center" bgColor="gray.100">
+        <Flex direction="column" h="100vh" w={`${LAYOUT_MAX_WIDTH}px`} pt={GNB_HEIGHT}>
+          {children}
+        </Flex>
       </Flex>
     </>
   );
