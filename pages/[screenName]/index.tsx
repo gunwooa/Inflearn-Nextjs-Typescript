@@ -1,14 +1,15 @@
 /* eslint-disable no-alert */
 import { GetServerSideProps, NextPage } from 'next';
-import React, { ChangeEvent, useCallback, useState } from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { Avatar, Box, Button, Flex, FormControl, FormLabel, Switch, Text, Textarea, VStack } from '@chakra-ui/react';
 import ResizeTextArea from 'react-textarea-autosize';
 import axios, { AxiosResponse } from 'axios';
 import ServiceLayout from '@/components/ServiceLayout';
-import { InAuthUser } from '@/models/types';
+import { InAuthUser, InMessage } from '@/models/types';
 import { useAuth } from '@/contexts/AuthUser.context';
 import { tMessageModel } from '@/models/message/message.model';
 import MessageItem from '@/components/MessageItem';
+import { convertDateToString } from '@/utils';
 
 interface Props {
   userInfo: InAuthUser | null;
@@ -53,6 +54,7 @@ const UserHomePage: NextPage<Props> = function ({ userInfo }) {
   const { authUser } = useAuth();
   const [message, setMessage] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(true);
+  const [list, setList] = useState<InMessage[]>([]);
 
   const handleChangeTextarea = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = e.currentTarget;
@@ -91,6 +93,22 @@ const UserHomePage: NextPage<Props> = function ({ userInfo }) {
 
     setMessage('');
   }, [authUser, isAnonymous, message]);
+
+  useEffect(() => {
+    if (userInfo === null) return;
+
+    (async () => {
+      try {
+        const res = await fetch(`/api/messages.list?uid=${authUser?.uid}`);
+        if (res.status === 200) {
+          const data = await res.json();
+          setList(data);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+  }, [authUser, userInfo]);
 
   if (userInfo === null) {
     return <p>사용자가 존재하지 않습니다.</p>;
@@ -155,30 +173,22 @@ const UserHomePage: NextPage<Props> = function ({ userInfo }) {
       </Box>
 
       <VStack spacing="12px" mt="6">
-        <MessageItem
-          uid="tetete"
-          displayName="test"
-          photoURL={authUser?.photoURL ?? ''}
-          isOwner={false}
-          item={{
-            id: 'test',
-            message: 'test입니다~~~',
-            createAt: '2022-11-10T18:15:55+09:00',
-            reply: 'reply',
-            replayAt: '2022-11-10T19:15:55+09:00',
-          }}
-        />
-        <MessageItem
-          uid="tetete"
-          displayName="test"
-          photoURL={authUser?.photoURL ?? ''}
-          isOwner
-          item={{
-            id: 'test',
-            message: 'test입니다~~~',
-            createAt: '2022-11-10T18:15:55+09:00',
-          }}
-        />
+        {list.map((item) => (
+          <MessageItem
+            key={item.id}
+            uid={userInfo.uid}
+            displayName={userInfo.displayName ?? ''}
+            photoURL={userInfo?.photoURL ?? ANONYMOUS_IMAGE_URL}
+            isOwner={authUser?.uid === userInfo.uid}
+            item={{
+              id: item.id,
+              message: item.message,
+              createAt: convertDateToString(item.createAt),
+              // reply: 'reply',
+              // replayAt: '2022-11-10T19:15:55+09:00',
+            }}
+          />
+        ))}
       </VStack>
     </ServiceLayout>
   );
