@@ -1,5 +1,6 @@
-import { Avatar, Box, Divider, Flex, Text } from '@chakra-ui/react';
+import { Avatar, Box, Button, Divider, Flex, Text, Textarea } from '@chakra-ui/react';
 import React from 'react';
+import ResizeTextArea from 'react-textarea-autosize';
 import { ANONYMOUS_IMAGE_URL } from '@/pages/[screenName]';
 import { InMessage } from '@/models/types';
 import { convertDateToString } from '@/utils';
@@ -53,6 +54,31 @@ const MessageItem = function ({ uid, displayName, photoURL, isOwner, item }: Pro
                 {item.reply}
               </Text>
             </Box>
+          </Box>
+        </Box>
+      )}
+      {!haveReply && isOwner && (
+        <Box p="2">
+          <Divider />
+          <Box display="flex" mt="2">
+            <Box pt="1">
+              <Avatar size="sm" mr="2" src={photoURL} />
+            </Box>
+            <Box borderRadius="md" width="full" bg="gray.100" mr="2">
+              <Textarea
+                border="none"
+                boxShadow="none !important"
+                resize="none"
+                minH="unset"
+                overflow="hidden"
+                fontSize="xs"
+                placeholder="댓글을 입력하세요..."
+                as={ResizeTextArea}
+              />
+            </Box>
+            <Button colorScheme="pink" bgColor="#ff75b5" variant="solid" size="sm">
+              등록
+            </Button>
           </Box>
         </Box>
       )}
