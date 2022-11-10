@@ -2,24 +2,22 @@ import { firestore } from 'firebase-admin';
 import CustomServerError from '@/controllers/error/custom_server_error';
 import FirebaseAdmin from '../firebase_admin';
 
-const MEMBER_COL = 'members';
-const MSG_COL = 'messages';
-const SCR_NAME_COL = 'screen_names';
-
-const FIRESOTRE = FirebaseAdmin.getInstance().Firestore;
-
-async function post({
-  uid,
-  message,
-  author,
-}: {
+export type tMessageModel = {
   uid: string;
   message: string;
   author?: {
     displayName: string;
     photoURL?: string;
   };
-}) {
+};
+
+const MEMBER_COL = 'members';
+const MSG_COL = 'messages';
+const SCR_NAME_COL = 'screen_names';
+
+const FIRESOTRE = FirebaseAdmin.getInstance().Firestore;
+
+async function post({ uid, message, author }: tMessageModel) {
   const memberRef = FIRESOTRE.collection(MEMBER_COL).doc(uid);
   await FIRESOTRE.runTransaction(async (transaction) => {
     const memberDoc = await transaction.get(memberRef);

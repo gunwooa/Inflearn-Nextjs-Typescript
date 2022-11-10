@@ -7,6 +7,7 @@ import axios, { AxiosResponse } from 'axios';
 import ServiceLayout from '@/components/ServiceLayout';
 import { InAuthUser } from '@/models/in_auth_user';
 import { useAuth } from '@/contexts/AuthUser.context';
+import { tMessageModel } from '@/models/message/message.model';
 
 interface Props {
   userInfo: InAuthUser | null;
@@ -14,6 +15,38 @@ interface Props {
 
 const ANONYMOUS_IMAGE_URL = '/anonymous.png';
 const ANONYMOUS_SWITCH_ID = 'anonymous';
+
+const postMessage = async ({ uid, message, author }: tMessageModel) => {
+  if (message.length <= 0) {
+    return {
+      result: false,
+      message: '메시지를 입력해주세요.',
+    };
+  }
+
+  try {
+    await fetch('/api/messages.add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        uid,
+        message,
+        author,
+      }),
+    });
+    return {
+      result: true,
+    };
+  } catch (e) {
+    console.error(e);
+    return {
+      result: false,
+      message: '메시지 등록 실패',
+    };
+  }
+};
 
 const UserHomePage: NextPage<Props> = function ({ userInfo }) {
   const { authUser } = useAuth();
@@ -37,12 +70,33 @@ const UserHomePage: NextPage<Props> = function ({ userInfo }) {
     setIsAnonymous((prev) => !prev);
   }, [authUser]);
 
+  const handlePostMessage = useCallback(async () => {
+    const params = {
+      uid: authUser?.uid ?? '',
+      message,
+      author: isAnonymous
+        ? undefined
+        : {
+            displayName: authUser?.displayName ?? ANONYMOUS_SWITCH_ID,
+            photoURL: authUser?.photoURL ?? ANONYMOUS_IMAGE_URL,
+          },
+    };
+
+    const messageResp = await postMessage(params);
+    if (!messageResp.result) {
+      alert('메시지 등록 실패');
+      return;
+    }
+
+    setMessage('');
+  }, [authUser, isAnonymous, message]);
+
   if (userInfo === null) {
     return <p>사용자가 존재하지 않습니다.</p>;
   }
 
   return (
-    <ServiceLayout title="user home">
+    <ServiceLayout title={`${userInfo.displayName}의 홈`}>
       <Flex p={4} bgColor="white">
         <Avatar src={userInfo.photoURL ?? ''} size="lg" />
         <Flex direction="column" justify="center" ml={4}>
@@ -73,7 +127,14 @@ const UserHomePage: NextPage<Props> = function ({ userInfo }) {
             onChange={handleChangeTextarea}
           />
 
-          <Button disabled={!message} bgColor="#ffb86c" color="white" colorScheme="yellow" size="sm">
+          <Button
+            onClick={handlePostMessage}
+            disabled={!message}
+            bgColor="#ffb86c"
+            color="white"
+            colorScheme="yellow"
+            size="sm"
+          >
             등록
           </Button>
         </Flex>
