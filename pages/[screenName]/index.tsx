@@ -1,19 +1,20 @@
 /* eslint-disable no-alert */
 import { GetServerSideProps, NextPage } from 'next';
 import React, { ChangeEvent, useCallback, useState } from 'react';
-import { Avatar, Box, Button, Flex, FormControl, FormLabel, Switch, Text, Textarea } from '@chakra-ui/react';
+import { Avatar, Box, Button, Flex, FormControl, FormLabel, Switch, Text, Textarea, VStack } from '@chakra-ui/react';
 import ResizeTextArea from 'react-textarea-autosize';
 import axios, { AxiosResponse } from 'axios';
 import ServiceLayout from '@/components/ServiceLayout';
 import { InAuthUser } from '@/models/in_auth_user';
 import { useAuth } from '@/contexts/AuthUser.context';
 import { tMessageModel } from '@/models/message/message.model';
+import MessageItem from '@/components/MessageItem';
 
 interface Props {
   userInfo: InAuthUser | null;
 }
 
-const ANONYMOUS_IMAGE_URL = '/anonymous.png';
+export const ANONYMOUS_IMAGE_URL = '/anonymous.png';
 const ANONYMOUS_SWITCH_ID = 'anonymous';
 
 const postMessage = async ({ uid, message, author }: tMessageModel) => {
@@ -152,6 +153,11 @@ const UserHomePage: NextPage<Props> = function ({ userInfo }) {
           </FormLabel>
         </FormControl>
       </Box>
+
+      <VStack spacing="12px" mt="6">
+        <MessageItem />
+        <MessageItem />
+      </VStack>
     </ServiceLayout>
   );
 };
