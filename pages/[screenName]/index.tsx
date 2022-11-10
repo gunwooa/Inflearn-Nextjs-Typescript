@@ -5,7 +5,7 @@ import { Avatar, Box, Button, Flex, FormControl, FormLabel, Switch, Text, Textar
 import ResizeTextArea from 'react-textarea-autosize';
 import axios, { AxiosResponse } from 'axios';
 import ServiceLayout from '@/components/ServiceLayout';
-import { InAuthUser } from '@/models/in_auth_user';
+import { InAuthUser } from '@/models/types';
 import { useAuth } from '@/contexts/AuthUser.context';
 import { tMessageModel } from '@/models/message/message.model';
 import MessageItem from '@/components/MessageItem';
@@ -155,8 +155,19 @@ const UserHomePage: NextPage<Props> = function ({ userInfo }) {
       </Box>
 
       <VStack spacing="12px" mt="6">
-        <MessageItem />
-        <MessageItem />
+        <MessageItem
+          uid="tetete"
+          displayName="test"
+          photoURL={authUser?.photoURL ?? ''}
+          isOwner={false}
+          item={{
+            id: 'test',
+            message: 'test입니다~~~',
+            createAt: '2022-11-10T18:15:55+09:00',
+            reply: 'reply',
+            replayAt: '2022-11-10T19:15:55+09:00',
+          }}
+        />
       </VStack>
     </ServiceLayout>
   );

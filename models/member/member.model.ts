@@ -1,5 +1,5 @@
 import FirebaseAdmin from '../firebase_admin';
-import { InAuthUser } from '../in_auth_user';
+import { InAuthUser } from '../types';
 
 const MEMBER_COL = 'members';
 const SCREEN_NAME_COL = 'screen_names';

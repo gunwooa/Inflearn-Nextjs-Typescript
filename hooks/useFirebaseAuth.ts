@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { GoogleAuthProvider, signInWithPopup, User } from 'firebase/auth';
-import { InAuthUser } from '@/models/in_auth_user';
+import { InAuthUser } from '@/models/types';
 import FirebaseClient from '@/models/firebase_client';
 import { getLocalStorage, removeLocalStorage, setLocalStorage } from '@/store/localStorage';
 

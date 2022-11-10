@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import React, { createContext, useContext } from 'react';
-import { InAuthUser } from '@/models/in_auth_user';
+import { InAuthUser } from '@/models/types';
 import useFirebaseAuth from '@/hooks/useFirebaseAuth';
 
 interface InAuthUserContext {
